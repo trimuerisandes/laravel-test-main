@@ -5,15 +5,8 @@ namespace App;
 use App\Traits\Searchable;
 use Illuminate\Database\Eloquent\Model;
 
-
-/**
- * @property integer $id
- * @property string $name
- * @property string $surname
- */
-class Author extends Model
+class BookAuthor extends Model
 {
-    public $timestamps = false;
     use Searchable;
 
     /**
@@ -21,24 +14,33 @@ class Author extends Model
      *
      * @var string
      */
-    protected $table = 'authors';
-    protected $primaryKey = 'id';
+    protected $table = 'book_author';
+    protected $primaryKey = 'book_id';
     public $incrementing = false;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [
-        'name',
-        'surname',
-    ];
+    protected $fillable = ['book_id','author_id'];
 
     /**
      * The attributes that are searchable.
      *
      * @var array
      */
-    public $searchable = ['name','surname'];
+    public $searchable = ['book_id','author_id'];
 
+
+    public $appends = [
+        'authors'
+    ];
+
+    public function getAuthorsAttribute(){
+        return $this->belongsTo(Author::class,
+            'author_id',
+            'id')->first();
+
+    }
 }
